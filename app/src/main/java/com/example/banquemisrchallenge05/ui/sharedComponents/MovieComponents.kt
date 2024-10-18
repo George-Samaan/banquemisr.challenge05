@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,12 +34,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import com.example.banquemisrchallenge05.R
 import com.example.banquemisrchallenge05.data.model.Movie
 import com.example.banquemisrchallenge05.utils.Constants
 
@@ -79,7 +85,6 @@ fun AnimatedCard(movie: Movie) {
     }
 }
 
-
 @Composable
 fun MovieCard(movie: Movie) {
     Card(
@@ -91,49 +96,80 @@ fun MovieCard(movie: Movie) {
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Box {
-            Image(
-                painter = rememberAsyncImagePainter("${Constants.IMAGE_BASE_URL}${movie.poster_path}"),
-                contentDescription = movie.title,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
+            val painter = rememberAsyncImagePainter(
+                model = "${Constants.IMAGE_BASE_URL}${movie.poster_path}",
+                error = painterResource(R.drawable.ic_launcher_foreground),
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomStart)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)),
-                            startY = 0f,
-                            endY = 50f
-                        ),
-                        shape = RoundedCornerShape(18.dp)
-                    )
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(9.dp)
-                ) {
-                    Text(
-                        text = movie.title,
-                        fontSize = 17.sp,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        ),
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                    Text(
-                        fontSize = 15.sp,
-                        text = movie.release_date,
-                        style = MaterialTheme.typography.bodySmall.copy(color = Color.LightGray),
-                        modifier = Modifier.padding(top = 2.dp)
-                    )
-                }
+            MovieImage(painter = painter, contentDescription = movie.title)
+            if (painter.state is AsyncImagePainter.State.Loading) {
+                LoadingIndicator()
             }
+            MovieInfo(movie = movie, modifier = Modifier.align(Alignment.BottomStart))
+        }
+    }
+}
+
+@Composable
+fun MovieImage(painter: Painter, contentDescription: String) {
+    Image(
+        painter = painter,
+        contentDescription = contentDescription,
+        modifier = Modifier
+            .fillMaxSize()
+            .clip(RoundedCornerShape(12.dp)),
+        contentScale = ContentScale.Crop
+    )
+}
+
+@Composable
+fun LoadingIndicator() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(40.dp),
+            color = Color.Black
+        )
+    }
+}
+
+@Composable
+fun MovieInfo(movie: Movie, modifier: Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)),
+                    startY = 0f,
+                    endY = 50f
+                ),
+                shape = RoundedCornerShape(18.dp)
+            )
+    ) {
+        Column(
+            modifier = Modifier.padding(9.dp)
+        ) {
+            Text(
+                text = movie.title,
+                fontSize = 17.sp,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                ),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
+            Text(
+                fontSize = 15.sp,
+                text = movie.release_date,
+                style = MaterialTheme.typography.bodySmall.copy(color = Color.LightGray),
+                modifier = Modifier.padding(top = 2.dp)
+            )
         }
     }
 }

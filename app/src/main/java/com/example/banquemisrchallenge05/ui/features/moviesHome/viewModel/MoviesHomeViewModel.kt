@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
 class MoviesHomeViewModel(private val repository: Repository) : ViewModel() {
     private val _nowPlayingMovies = MutableStateFlow<ApiState>(ApiState.Loading)
@@ -21,11 +23,10 @@ class MoviesHomeViewModel(private val repository: Repository) : ViewModel() {
     val upcomingMovies: StateFlow<ApiState> get() = _upcomingMovies
 
     private fun fetchNowPlayingMovies() {
-        _nowPlayingMovies.value = ApiState.Loading
         viewModelScope.launch {
             repository.getNowPlayingMovies()
                 .catch { error ->
-                    _nowPlayingMovies.value = ApiState.Failure(error)
+                    _nowPlayingMovies.value = ApiState.Failure(getErrorMessage(error))
                 }
                 .collect { result ->
                     when (result) {
@@ -34,7 +35,9 @@ class MoviesHomeViewModel(private val repository: Repository) : ViewModel() {
                         }
 
                         is ResponseResult.Error -> {
-                            _nowPlayingMovies.value = ApiState.Failure(result.exception)
+                            _nowPlayingMovies.value = ApiState.Failure(
+                                result.exception.message ?: "Unknown error occurred"
+                            )
                         }
                     }
                 }
@@ -42,10 +45,9 @@ class MoviesHomeViewModel(private val repository: Repository) : ViewModel() {
     }
 
     private fun fetchPopularMovies() {
-        _popularMovies.value = ApiState.Loading
         viewModelScope.launch {
             repository.getPopularMovies().catch { error ->
-                _popularMovies.value = ApiState.Failure(error)
+                _popularMovies.value = ApiState.Failure(getErrorMessage(error))
 
             }.collect { result ->
                 when (result) {
@@ -54,7 +56,8 @@ class MoviesHomeViewModel(private val repository: Repository) : ViewModel() {
                     }
 
                     is ResponseResult.Error -> {
-                        _popularMovies.value = ApiState.Failure(result.exception)
+                        _popularMovies.value =
+                            ApiState.Failure(result.exception.message ?: "Unknown error occurred")
                     }
                 }
 
@@ -63,10 +66,9 @@ class MoviesHomeViewModel(private val repository: Repository) : ViewModel() {
     }
 
     private fun fetchUpcomingMovies() {
-        _upcomingMovies.value = ApiState.Loading
         viewModelScope.launch {
             repository.getUpcomingMovies().catch { error ->
-                _upcomingMovies.value = ApiState.Failure(error)
+                _upcomingMovies.value = ApiState.Failure(getErrorMessage(error))
             }.collect { result ->
                 when (result) {
                     is ResponseResult.Success -> {
@@ -74,7 +76,8 @@ class MoviesHomeViewModel(private val repository: Repository) : ViewModel() {
                     }
 
                     is ResponseResult.Error -> {
-                        _upcomingMovies.value = ApiState.Failure(result.exception)
+                        _upcomingMovies.value =
+                            ApiState.Failure(result.exception.message ?: "Unknown error occurred")
                     }
                 }
             }
@@ -82,8 +85,20 @@ class MoviesHomeViewModel(private val repository: Repository) : ViewModel() {
     }
 
     fun getAllData() {
+        _nowPlayingMovies.value = ApiState.Loading
+        _popularMovies.value = ApiState.Loading
+        _upcomingMovies.value = ApiState.Loading
+
         fetchNowPlayingMovies()
         fetchPopularMovies()
         fetchUpcomingMovies()
+    }
+}
+
+private fun getErrorMessage(exception: Throwable): String {
+    return when (exception) {
+        is IOException -> "Network error. Please check your connection."
+        is HttpException -> "Server error. Please try again later."
+        else -> "An unexpected error occurred. Please try again."
     }
 }

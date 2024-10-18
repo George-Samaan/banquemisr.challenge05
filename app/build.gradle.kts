@@ -80,4 +80,8 @@ dependencies {
 
     //jetpack navigation
     implementation(libs.androidx.navigation.compose)
+
+    //swipe refresh
+    implementation(libs.accompanist.swiperefresh)
+
 }

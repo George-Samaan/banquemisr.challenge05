@@ -5,6 +5,7 @@ import com.example.banquemisrchallenge05.data.network.ResponseResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
+import java.net.UnknownHostException
 
 object ApiHelper {
     private const val TAG = "ApiHelper"
@@ -21,6 +22,9 @@ object ApiHelper {
                 Log.e(TAG, "API Call Error: ${response.code()} - ${response.message()}")
                 emit(ResponseResult.Error(Exception("Failed to fetch data")))
             }
+        } catch (e: UnknownHostException) {
+            Log.e(TAG, "No internet connection: ${e.message}")
+            emit(ResponseResult.Error(Exception("Unable to connect to the internet. Please check your Wi-Fi or mobile data.")))
         } catch (e: Exception) {
             // Log exceptions during the API call
             Log.e(TAG, "API Call Exception: ${e.message}")
