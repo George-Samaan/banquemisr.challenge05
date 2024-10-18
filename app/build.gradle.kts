@@ -77,4 +77,7 @@ dependencies {
 
     //Animation
     implementation(libs.lottie.compose)
+
+    //jetpack navigation
+    implementation(libs.androidx.navigation.compose)
 }
