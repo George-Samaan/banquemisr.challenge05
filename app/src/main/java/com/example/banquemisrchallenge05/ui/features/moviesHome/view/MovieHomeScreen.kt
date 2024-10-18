@@ -1,4 +1,4 @@
-package com.example.banquemisrchallenge05.ui.features.moviesHomeScreen.view
+package com.example.banquemisrchallenge05.ui.features.moviesHome.view
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.banquemisrchallenge05.data.model.MovieResponse
 import com.example.banquemisrchallenge05.data.network.ApiState
-import com.example.banquemisrchallenge05.ui.features.moviesHomeScreen.viewModel.MoviesHomeViewModel
+import com.example.banquemisrchallenge05.ui.features.moviesHome.viewModel.MoviesHomeViewModel
 import com.example.banquemisrchallenge05.ui.sharedComponents.AnimationIndicator
 import com.example.banquemisrchallenge05.ui.sharedComponents.MoviesList
 

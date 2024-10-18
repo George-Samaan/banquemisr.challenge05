@@ -1,4 +1,4 @@
-package com.example.banquemisrchallenge05.ui.features.moviesHomeScreen.viewModel
+package com.example.banquemisrchallenge05.ui.features.moviesHome.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
