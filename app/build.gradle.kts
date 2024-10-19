@@ -71,4 +71,17 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+
+    //coil for images
+    implementation(libs.coil.compose)
+
+    //Animation
+    implementation(libs.lottie.compose)
+
+    //jetpack navigation
+    implementation(libs.androidx.navigation.compose)
+
+    //swipe refresh
+    implementation(libs.accompanist.swiperefresh)
+
 }
