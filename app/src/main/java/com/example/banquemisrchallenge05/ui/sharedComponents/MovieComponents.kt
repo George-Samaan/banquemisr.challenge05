@@ -6,6 +6,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,7 +49,7 @@ import com.example.banquemisrchallenge05.data.model.Movie
 import com.example.banquemisrchallenge05.utils.Constants
 
 @Composable
-fun MoviesList(movies: List<Movie>) {
+fun MoviesList(movies: List<Movie>, onMovieClick: (Int) -> Unit) {
     val rows = movies.chunked(6)
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
@@ -62,6 +63,7 @@ fun MoviesList(movies: List<Movie>) {
                 items(rowMovies) { movie ->
                     AnimatedCard(
                         movie = movie,
+                        onMovieClick = onMovieClick
                     )
                 }
             }
@@ -70,7 +72,7 @@ fun MoviesList(movies: List<Movie>) {
 }
 
 @Composable
-fun AnimatedCard(movie: Movie) {
+fun AnimatedCard(movie: Movie, onMovieClick: (Int) -> Unit) {
     var isVisible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         isVisible = true
@@ -81,17 +83,18 @@ fun AnimatedCard(movie: Movie) {
         enter = scaleIn(animationSpec = tween(durationMillis = 700)),
         exit = scaleOut(animationSpec = tween(durationMillis = 700))
     ) {
-        MovieCard(movie = movie)
+        MovieCard(movie = movie, onMovieClick = onMovieClick)
     }
 }
 
 @Composable
-fun MovieCard(movie: Movie) {
+fun MovieCard(movie: Movie, onMovieClick: (Int) -> Unit) {
     Card(
         modifier = Modifier
             .width(175.dp)
             .height(230.dp)
             .padding(horizontal = 10.dp, vertical = 8.dp)
+            .clickable { onMovieClick(movie.id) }
             .clip(RoundedCornerShape(18.dp)),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {

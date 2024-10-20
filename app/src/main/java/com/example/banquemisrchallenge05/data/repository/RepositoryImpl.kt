@@ -1,5 +1,6 @@
 package com.example.banquemisrchallenge05.data.repository
 
+import com.example.banquemisrchallenge05.data.model.MovieDetailsResponse
 import com.example.banquemisrchallenge05.data.model.MovieResponse
 import com.example.banquemisrchallenge05.data.network.ResponseResult
 import com.example.banquemisrchallenge05.data.remote.RemoteDataSource
@@ -16,5 +17,9 @@ class RepositoryImpl(private val remoteDataSource: RemoteDataSource) : Repositor
 
     override suspend fun getUpcomingMovies(): Flow<ResponseResult<MovieResponse>> {
         return remoteDataSource.getUpcomingMovies()
+    }
+
+    override suspend fun getMovieDetails(movieId: Int): Flow<ResponseResult<MovieDetailsResponse>> {
+        return remoteDataSource.getMovieDetails(movieId)
     }
 }

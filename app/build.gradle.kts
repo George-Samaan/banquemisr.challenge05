@@ -84,4 +84,10 @@ dependencies {
     //swipe refresh
     implementation(libs.accompanist.swiperefresh)
 
+    //Rating bar
+    implementation("com.github.SmartToolFactory:Compose-RatingBar:1.1.1")
+
+    //Google icons
+    implementation("androidx.compose.material:material-icons-extended-android:1.7.2")
+
 }
