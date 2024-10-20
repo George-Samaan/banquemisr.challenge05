@@ -2,6 +2,8 @@ package com.example.banquemisrchallenge05.ui.features.moviesHome.view
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -27,7 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.navigation.NavController
 import com.example.banquemisrchallenge05.R
 import com.example.banquemisrchallenge05.data.model.MovieResponse
 import com.example.banquemisrchallenge05.data.network.ApiState
@@ -46,18 +47,41 @@ import com.example.banquemisrchallenge05.ui.features.moviesHome.viewModel.Movies
 import com.example.banquemisrchallenge05.ui.sharedComponents.AnimationIndicator
 import com.example.banquemisrchallenge05.ui.sharedComponents.MoviesList
 import com.example.banquemisrchallenge05.ui.sharedComponents.ReusableLottie
+import com.example.banquemisrchallenge05.utils.ConnectivityReceiver
 import com.example.banquemisrchallenge05.utils.isNetworkAvailable
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Suppress("DEPRECATION")
 @Composable
-fun MoviesHomeScreen(viewModel: MoviesHomeViewModel) {
+fun MoviesHomeScreen(viewModel: MoviesHomeViewModel, navController: NavController) {
     var selectedTab by remember { mutableIntStateOf(0) }
     val nowPlayingMoviesState = viewModel.nowPlayingMovies.collectAsState().value
     val popularMoviesState = viewModel.popularMovies.collectAsState().value
     val upcomingMoviesState = viewModel.upcomingMovies.collectAsState().value
     val isRefreshing = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    var isConnected by remember { mutableStateOf(true) }
+
+    val connectivityReceiver = remember {
+        ConnectivityReceiver(
+            onNetworkAvailable = {
+                isConnected = true
+                viewModel.getAllData()
+            },
+            onNetworkLost = {
+                isConnected = false
+            }
+        )
+    }
+
+    DisposableEffect(Unit) {
+        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        context.registerReceiver(connectivityReceiver, filter)
+        onDispose {
+            context.unregisterReceiver(connectivityReceiver)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.getAllData()
@@ -68,33 +92,42 @@ fun MoviesHomeScreen(viewModel: MoviesHomeViewModel) {
             .fillMaxSize()
             .background(Color(0xFFEFEFEF))
     ) {
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing.value),
-            onRefresh = {
-                isRefreshing.value = true
-                viewModel.getAllData()
-                isRefreshing.value = false
-            }
-        ) {
-            Column(
-                modifier = Modifier.padding(top = 50.dp)
+        if (!isConnected) {
+            FailureCheck(
+                apiState = ApiState.Failure("No internet connection"),
+                context = context
+            )
+        } else {
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing.value),
+                onRefresh = {
+                    isRefreshing.value = true
+                    viewModel.getAllData()
+                    isRefreshing.value = false
+                }
             ) {
-                TabsSection(
-                    selectedTab = selectedTab,
-                    onTabSelected = { selectedTab = it }
-                )
-                MoviesContent(
-                    selectedTab = selectedTab,
-                    nowPlayingMoviesState = nowPlayingMoviesState,
-                    popularMoviesState = popularMoviesState,
-                    upcomingMoviesState = upcomingMoviesState,
-                    viewModel = viewModel
-                )
-                AnimationIndicator(
-                    nowPlayingMoviesState = nowPlayingMoviesState,
-                    popularMoviesState = popularMoviesState,
-                    upcomingMoviesState = upcomingMoviesState
-                )
+                Column(
+                    modifier = Modifier.padding(top = 50.dp)
+                ) {
+                    TabsSection(
+                        selectedTab = selectedTab,
+                        onTabSelected = { selectedTab = it }
+                    )
+                    MoviesContent(
+                        selectedTab = selectedTab,
+                        nowPlayingMoviesState = nowPlayingMoviesState,
+                        popularMoviesState = popularMoviesState,
+                        upcomingMoviesState = upcomingMoviesState,
+                        onMovieClick = { movieId ->
+                            navController.navigate("movieDetails/$movieId")
+                        }
+                    )
+                    AnimationIndicator(
+                        nowPlayingMoviesState = nowPlayingMoviesState,
+                        popularMoviesState = popularMoviesState,
+                        upcomingMoviesState = upcomingMoviesState
+                    )
+                }
             }
         }
     }
@@ -142,7 +175,6 @@ fun TabsSection(selectedTab: Int, onTabSelected: (Int) -> Unit) {
             }
         }
     }
-
 }
 
 @Composable
@@ -155,54 +187,59 @@ fun TabTitle(title: String, isSelected: Boolean) {
     )
 }
 
-
 @Composable
 fun MoviesContent(
     selectedTab: Int,
     nowPlayingMoviesState: ApiState,
     popularMoviesState: ApiState,
     upcomingMoviesState: ApiState,
-    viewModel: MoviesHomeViewModel
+    onMovieClick: (Int) -> Unit
 ) {
     when (selectedTab) {
-        0 -> MoviesSections(apiState = nowPlayingMoviesState, viewModel = viewModel)
-        1 -> MoviesSections(apiState = popularMoviesState, viewModel = viewModel)
-        2 -> MoviesSections(apiState = upcomingMoviesState, viewModel = viewModel)
+        0 -> MoviesSections(
+            apiState = nowPlayingMoviesState,
+            onMovieClick = onMovieClick
+        )
+
+        1 -> MoviesSections(
+            apiState = popularMoviesState,
+            onMovieClick = onMovieClick
+        )
+
+        2 -> MoviesSections(
+            apiState = upcomingMoviesState,
+            onMovieClick = onMovieClick
+        )
     }
 }
 
 @Composable
-fun MoviesSections(apiState: ApiState, viewModel: MoviesHomeViewModel) {
+fun MoviesSections(
+    apiState: ApiState,
+    onMovieClick: (Int) -> Unit
+) {
     val context = LocalContext.current
-    val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
-    val moviesObserver = MoviesObserver(viewModel, context)
-
-    DisposableEffect(Unit) {
-        lifecycleOwner.value.lifecycle.addObserver(moviesObserver)
-        onDispose {
-            lifecycleOwner.value.lifecycle.removeObserver(moviesObserver)
-        }
-    }
 
     when (apiState) {
         is ApiState.Loading -> {}
         is ApiState.Success -> {
             if (apiState.data is MovieResponse) {
                 val movies = apiState.data.results
-                MoviesList(movies = movies)
+                MoviesList(movies = movies, onMovieClick = onMovieClick)
             }
         }
 
         is ApiState.Failure -> {
-            FailureCheck(apiState, viewModel, context)
+            FailureCheck(apiState, context)
         }
     }
 }
 
 @Composable
-fun FailureCheck(apiState: ApiState.Failure, viewModel: MoviesHomeViewModel, context: Context) {
+fun FailureCheck(apiState: ApiState.Failure, context: Context) {
     Box(
-        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 8.dp),
@@ -220,20 +257,22 @@ fun FailureCheck(apiState: ApiState.Failure, viewModel: MoviesHomeViewModel, con
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    if (isNetworkAvailable(context)) {
-                        viewModel.getAllData()
-                    } else {
-                        val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
-                        context.startActivity(intent)
-                    }
+                    handleTryAgainClick(context)
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
             ) {
                 Text(
-                    text = "Try Again",
+                    text = "Open Wifi ",
                     color = Color.White
                 )
             }
         }
+    }
+}
+
+fun handleTryAgainClick(context: Context) {
+    if (!isNetworkAvailable(context)) {
+        val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+        context.startActivity(intent)
     }
 }

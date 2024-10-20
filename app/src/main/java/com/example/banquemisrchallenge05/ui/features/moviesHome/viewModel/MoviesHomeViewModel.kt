@@ -88,14 +88,13 @@ class MoviesHomeViewModel(private val repository: Repository) : ViewModel() {
         _nowPlayingMovies.value = ApiState.Loading
         _popularMovies.value = ApiState.Loading
         _upcomingMovies.value = ApiState.Loading
-
         fetchNowPlayingMovies()
         fetchPopularMovies()
         fetchUpcomingMovies()
     }
 }
 
-private fun getErrorMessage(exception: Throwable): String {
+fun getErrorMessage(exception: Throwable): String {
     return when (exception) {
         is IOException -> "Network error. Please check your connection."
         is HttpException -> "Server error. Please try again later."

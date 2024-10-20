@@ -1,5 +1,6 @@
 package com.example.banquemisrchallenge05.data.remote
 
+import com.example.banquemisrchallenge05.data.model.MovieDetailsResponse
 import com.example.banquemisrchallenge05.data.model.MovieResponse
 import com.example.banquemisrchallenge05.data.network.ResponseResult
 import com.example.banquemisrchallenge05.data.network.TMDBApiServices
@@ -18,5 +19,10 @@ class RemoteDataSourceImpl(private val apiService: TMDBApiServices) : RemoteData
 
     override suspend fun getUpcomingMovies(): Flow<ResponseResult<MovieResponse>> {
         return handleApiCall { apiService.getUpcomingMovies() }
+    }
+
+    override suspend fun getMovieDetails(movieId: Int): Flow<ResponseResult<MovieDetailsResponse>> {
+        return handleApiCall { apiService.getMovieDetails(movieId) }
+
     }
 }

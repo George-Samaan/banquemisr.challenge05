@@ -1,7 +1,9 @@
 package com.example.banquemisrchallenge05.data.model
 
 data class MovieResponse(
-    val results: List<Movie>
+    val results: List<Movie>,
+    val totalResults: Int,
+    val totalPages: Int
 )
 
 data class Movie(
