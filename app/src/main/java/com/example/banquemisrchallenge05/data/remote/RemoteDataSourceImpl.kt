@@ -9,16 +9,16 @@ import kotlinx.coroutines.flow.Flow
 
 
 class RemoteDataSourceImpl(private val apiService: TMDBApiServices) : RemoteDataSource {
-    override suspend fun getNowPlayingMovies(): Flow<ResponseResult<MovieResponse>> {
-        return handleApiCall { apiService.getNowPlayingMovies() }
+    override suspend fun getNowPlayingMovies(page: Int): Flow<ResponseResult<MovieResponse>> {
+        return handleApiCall { apiService.getNowPlayingMovies(page = page) }
     }
 
-    override suspend fun getPopularMovies(): Flow<ResponseResult<MovieResponse>> {
-        return handleApiCall { apiService.getPopularMovies() }
+    override suspend fun getPopularMovies(page: Int): Flow<ResponseResult<MovieResponse>> {
+        return handleApiCall { apiService.getPopularMovies(page = page) }
     }
 
-    override suspend fun getUpcomingMovies(): Flow<ResponseResult<MovieResponse>> {
-        return handleApiCall { apiService.getUpcomingMovies() }
+    override suspend fun getUpcomingMovies(page: Int): Flow<ResponseResult<MovieResponse>> {
+        return handleApiCall { apiService.getUpcomingMovies(page = page) }
     }
 
     override suspend fun getMovieDetails(movieId: Int): Flow<ResponseResult<MovieDetailsResponse>> {

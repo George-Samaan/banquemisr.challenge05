@@ -17,13 +17,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.banquemisrchallenge05.R
-import com.example.banquemisrchallenge05.data.network.ApiState
+import com.example.banquemisrchallenge05.data.model.Movie
 
 @Composable
 fun ReusableLottie(
@@ -57,13 +59,13 @@ fun ReusableLottie(
 
 @Composable
 fun AnimationIndicator(
-    nowPlayingMoviesState: ApiState,
-    popularMoviesState: ApiState,
-    upcomingMoviesState: ApiState
+    nowPlayingMoviesState: LazyPagingItems<Movie>,
+    popularMoviesState: LazyPagingItems<Movie>,
+    upcomingMoviesState: LazyPagingItems<Movie>
 ) {
-    if (nowPlayingMoviesState is ApiState.Loading ||
-        popularMoviesState is ApiState.Loading ||
-        upcomingMoviesState is ApiState.Loading
+    if (nowPlayingMoviesState.loadState.refresh is LoadState.Loading ||
+        popularMoviesState.loadState.refresh is LoadState.Loading ||
+        upcomingMoviesState.loadState.refresh is LoadState.Loading
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),

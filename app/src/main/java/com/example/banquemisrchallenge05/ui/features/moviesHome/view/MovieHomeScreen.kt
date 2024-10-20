@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,8 +39,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.banquemisrchallenge05.R
-import com.example.banquemisrchallenge05.data.model.MovieResponse
+import com.example.banquemisrchallenge05.data.model.Movie
 import com.example.banquemisrchallenge05.data.network.ApiState
 import com.example.banquemisrchallenge05.ui.features.moviesHome.viewModel.MoviesHomeViewModel
 import com.example.banquemisrchallenge05.ui.sharedComponents.AnimationIndicator
@@ -56,9 +58,11 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 @Composable
 fun MoviesHomeScreen(viewModel: MoviesHomeViewModel, navController: NavController) {
     var selectedTab by remember { mutableIntStateOf(0) }
-    val nowPlayingMoviesState = viewModel.nowPlayingMovies.collectAsState().value
-    val popularMoviesState = viewModel.popularMovies.collectAsState().value
-    val upcomingMoviesState = viewModel.upcomingMovies.collectAsState().value
+
+    val popularItems = viewModel.popular.collectAsLazyPagingItems()
+    val nowPlayingItems = viewModel.nowPlaying.collectAsLazyPagingItems()
+    val upcomingItems = viewModel.upcoming.collectAsLazyPagingItems()
+
     val isRefreshing = remember { mutableStateOf(false) }
     val context = LocalContext.current
     var isConnected by remember { mutableStateOf(true) }
@@ -67,7 +71,7 @@ fun MoviesHomeScreen(viewModel: MoviesHomeViewModel, navController: NavControlle
         ConnectivityReceiver(
             onNetworkAvailable = {
                 isConnected = true
-                viewModel.getAllData()
+//                viewModel.getAllData()
             },
             onNetworkLost = {
                 isConnected = false
@@ -84,12 +88,12 @@ fun MoviesHomeScreen(viewModel: MoviesHomeViewModel, navController: NavControlle
     }
 
     LaunchedEffect(Unit) {
-        viewModel.getAllData()
+//        viewModel.getAllData()
     }
 
-    Box(
+    Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(Color(0xFFEFEFEF))
     ) {
         if (!isConnected) {
@@ -102,7 +106,9 @@ fun MoviesHomeScreen(viewModel: MoviesHomeViewModel, navController: NavControlle
                 state = rememberSwipeRefreshState(isRefreshing.value),
                 onRefresh = {
                     isRefreshing.value = true
-                    viewModel.getAllData()
+                    nowPlayingItems.refresh()
+                    popularItems.refresh()
+                    upcomingItems.refresh()
                     isRefreshing.value = false
                 }
             ) {
@@ -115,17 +121,17 @@ fun MoviesHomeScreen(viewModel: MoviesHomeViewModel, navController: NavControlle
                     )
                     MoviesContent(
                         selectedTab = selectedTab,
-                        nowPlayingMoviesState = nowPlayingMoviesState,
-                        popularMoviesState = popularMoviesState,
-                        upcomingMoviesState = upcomingMoviesState,
+                        nowPlayingMoviesState = nowPlayingItems,
+                        popularMoviesState = popularItems,
+                        upcomingMoviesState = upcomingItems,
                         onMovieClick = { movieId ->
                             navController.navigate("movieDetails/$movieId")
                         }
                     )
                     AnimationIndicator(
-                        nowPlayingMoviesState = nowPlayingMoviesState,
-                        popularMoviesState = popularMoviesState,
-                        upcomingMoviesState = upcomingMoviesState
+                        nowPlayingMoviesState = nowPlayingItems,
+                        popularMoviesState = popularItems,
+                        upcomingMoviesState = upcomingItems
                     )
                 }
             }
@@ -190,24 +196,24 @@ fun TabTitle(title: String, isSelected: Boolean) {
 @Composable
 fun MoviesContent(
     selectedTab: Int,
-    nowPlayingMoviesState: ApiState,
-    popularMoviesState: ApiState,
-    upcomingMoviesState: ApiState,
+    nowPlayingMoviesState: LazyPagingItems<Movie>,
+    popularMoviesState: LazyPagingItems<Movie>,
+    upcomingMoviesState: LazyPagingItems<Movie>,
     onMovieClick: (Int) -> Unit
 ) {
     when (selectedTab) {
         0 -> MoviesSections(
-            apiState = nowPlayingMoviesState,
+            movies = nowPlayingMoviesState,
             onMovieClick = onMovieClick
         )
 
         1 -> MoviesSections(
-            apiState = popularMoviesState,
+            movies = popularMoviesState,
             onMovieClick = onMovieClick
         )
 
         2 -> MoviesSections(
-            apiState = upcomingMoviesState,
+            movies = upcomingMoviesState,
             onMovieClick = onMovieClick
         )
     }
@@ -215,22 +221,25 @@ fun MoviesContent(
 
 @Composable
 fun MoviesSections(
-    apiState: ApiState,
+    movies: LazyPagingItems<Movie>,
     onMovieClick: (Int) -> Unit
 ) {
-    val context = LocalContext.current
-
-    when (apiState) {
-        is ApiState.Loading -> {}
-        is ApiState.Success -> {
-            if (apiState.data is MovieResponse) {
-                val movies = apiState.data.results
-                MoviesList(movies = movies, onMovieClick = onMovieClick)
-            }
+    when (movies.loadState.refresh) {
+        is LoadState.Loading -> {
+            // Show loading state
         }
 
-        is ApiState.Failure -> {
-            FailureCheck(apiState, context)
+        is LoadState.Error -> {
+            // Show error state
+            val error = movies.loadState.refresh as LoadState.Error
+            FailureCheck(
+                ApiState.Failure(error.error.message ?: "Unknown Error"),
+                LocalContext.current
+            )
+        }
+
+        else -> {
+            MoviesList(movies = movies, onMovieClick = onMovieClick)
         }
     }
 }

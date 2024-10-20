@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.banquemisrchallenge05.R
@@ -49,23 +48,16 @@ import com.example.banquemisrchallenge05.data.model.Movie
 import com.example.banquemisrchallenge05.utils.Constants
 
 @Composable
-fun MoviesList(movies: List<Movie>, onMovieClick: (Int) -> Unit) {
-    val rows = movies.chunked(6)
-    LazyColumn(
+fun MoviesList(movies: LazyPagingItems<Movie>, onMovieClick: (Int) -> Unit) {
+    LazyRow(
         modifier = Modifier.fillMaxWidth()
     ) {
-        items(rows) { rowMovies ->
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            ) {
-                items(rowMovies) { movie ->
-                    AnimatedCard(
-                        movie = movie,
-                        onMovieClick = onMovieClick
-                    )
-                }
+        items(movies.itemCount) { index ->
+            movies[index]?.let { movie ->
+                MovieCard(
+                    movie = movie,
+                    onMovieClick = onMovieClick
+                )
             }
         }
     }

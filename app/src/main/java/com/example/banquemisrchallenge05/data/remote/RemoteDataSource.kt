@@ -6,8 +6,8 @@ import com.example.banquemisrchallenge05.data.network.ResponseResult
 import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataSource {
-    suspend fun getNowPlayingMovies(): Flow<ResponseResult<MovieResponse>>
-    suspend fun getPopularMovies(): Flow<ResponseResult<MovieResponse>>
-    suspend fun getUpcomingMovies(): Flow<ResponseResult<MovieResponse>>
+    suspend fun getNowPlayingMovies(page: Int): Flow<ResponseResult<MovieResponse>>
+    suspend fun getPopularMovies(page: Int): Flow<ResponseResult<MovieResponse>>
+    suspend fun getUpcomingMovies(page: Int): Flow<ResponseResult<MovieResponse>>
     suspend fun getMovieDetails(movieId: Int): Flow<ResponseResult<MovieDetailsResponse>>
 }
