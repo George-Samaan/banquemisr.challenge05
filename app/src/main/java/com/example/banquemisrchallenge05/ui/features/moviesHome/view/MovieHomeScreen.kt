@@ -21,7 +21,6 @@ import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.banquemisrchallenge05.data.model.Movie
-import com.example.banquemisrchallenge05.data.network.ApiState
 import com.example.banquemisrchallenge05.ui.features.moviesHome.viewModel.MoviesHomeViewModel
 import com.example.banquemisrchallenge05.ui.sharedComponents.AnimationIndicator
 import com.example.banquemisrchallenge05.ui.sharedComponents.Gap
@@ -65,37 +64,31 @@ fun MoviesHomeScreen(viewModel: MoviesHomeViewModel, navController: NavControlle
             .fillMaxWidth()
             .background(Color(0xFFFFFFFF))
     ) {
-        if (!isConnected.value) {
-            FailureCheck(
-                apiState = ApiState.Failure("No internet connection"),
-                context = context
+        Column {
+            Gap(50.dp)
+            TabsSection(
+                selectedTab = selectedTab,
+                onTabSelected = { selectedTab = it }
             )
-        } else {
-            Column {
-                Gap(50.dp)
-                TabsSection(
-                    selectedTab = selectedTab,
-                    onTabSelected = { selectedTab = it }
-                )
-                MoviesContent(
-                    selectedTab = selectedTab,
-                    nowPlayingMoviesState = nowPlayingItems,
-                    popularMoviesState = popularItems,
-                    upcomingMoviesState = upcomingItems,
-                    onMovieClick = { movieId ->
-                        navController.navigate("movieDetails/$movieId")
-                    },
-                    currentPageIndex = currentPageIndex
-                )
-                AnimationIndicator(
-                    nowPlayingMoviesState = nowPlayingItems,
-                    popularMoviesState = popularItems,
-                    upcomingMoviesState = upcomingItems
-                )
-            }
+            MoviesContent(
+                selectedTab = selectedTab,
+                nowPlayingMoviesState = nowPlayingItems,
+                popularMoviesState = popularItems,
+                upcomingMoviesState = upcomingItems,
+                onMovieClick = { movieId ->
+                    navController.navigate("movieDetails/$movieId")
+                },
+                currentPageIndex = currentPageIndex
+            )
+            AnimationIndicator(
+                nowPlayingMoviesState = nowPlayingItems,
+                popularMoviesState = popularItems,
+                upcomingMoviesState = upcomingItems
+            )
         }
     }
 }
+
 
 private fun refreshMovieData(
     nowPlayingItems: LazyPagingItems<Movie>,

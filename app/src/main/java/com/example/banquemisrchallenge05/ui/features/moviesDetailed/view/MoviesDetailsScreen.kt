@@ -54,29 +54,26 @@ fun MovieDetailsScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if (!isConnected) {
-            FailureCheck(apiState = ApiState.Failure("No internet connection"), context = context)
-        } else {
-            when (movieDetailsState) {
-                is ApiState.Loading -> {
-                    LoadingState()
-                }
-
-                is ApiState.Success -> {
-                    val movieDetails = movieDetailsState.data as? MovieDetailsResponse
-                    if (movieDetails != null) {
-                        MovieDetailContent(
-                            movieDetails = movieDetails,
-                            onBackPressed = onBackPressed
-                        )
-                    }
-                }
-
-                is ApiState.Failure -> FailureCheck(
-                    apiState = movieDetailsState,
-                    context = context
-                )
+        when (movieDetailsState) {
+            is ApiState.Loading -> {
+                LoadingState()
             }
+
+            is ApiState.Success -> {
+                val movieDetails = movieDetailsState.data as? MovieDetailsResponse
+                if (movieDetails != null) {
+                    MovieDetailContent(
+                        movieDetails = movieDetails,
+                        onBackPressed = onBackPressed
+                    )
+                }
+            }
+
+            is ApiState.Failure -> FailureCheck(
+                apiState = movieDetailsState,
+                context = context
+            )
         }
     }
 }
+

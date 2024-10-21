@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">banquemisr.challenge05</string>
+    <string name="open_wifi">"Open Wifi "</string>
+    <string name="no_internet_connection">No internet connection</string>
 </resources>

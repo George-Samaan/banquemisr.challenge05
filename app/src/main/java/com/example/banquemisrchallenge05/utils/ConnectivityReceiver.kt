@@ -15,7 +15,6 @@ class ConnectivityReceiver(
         val networkInfo =
             intent?.getParcelableExtra<NetworkInfo>(ConnectivityManager.EXTRA_NETWORK_INFO)
         if (networkInfo?.isConnected == true && networkInfo.type == ConnectivityManager.TYPE_WIFI) {
-            // Wi-Fi is connected, call your fetch data method
             onNetworkAvailable()
         } else {
             onNetworkLost()

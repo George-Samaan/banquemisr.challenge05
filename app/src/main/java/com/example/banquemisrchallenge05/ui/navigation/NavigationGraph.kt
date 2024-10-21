@@ -1,5 +1,7 @@
 package com.example.banquemisrchallenge05.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -10,6 +12,7 @@ import com.example.banquemisrchallenge05.ui.features.moviesHome.view.MoviesHomeS
 import com.example.banquemisrchallenge05.ui.features.moviesHome.viewModel.MoviesHomeViewModel
 import com.example.banquemisrchallenge05.ui.features.splash.SplashScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
