@@ -1,13 +1,14 @@
 package com.example.banquemisrchallenge05.data.repository
 
+import androidx.paging.PagingData
+import com.example.banquemisrchallenge05.data.model.Movie
 import com.example.banquemisrchallenge05.data.model.MovieDetailsResponse
-import com.example.banquemisrchallenge05.data.model.MovieResponse
 import com.example.banquemisrchallenge05.data.network.ResponseResult
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
-    suspend fun getNowPlayingMovies(): Flow<ResponseResult<MovieResponse>>
-    suspend fun getPopularMovies(): Flow<ResponseResult<MovieResponse>>
-    suspend fun getUpcomingMovies(): Flow<ResponseResult<MovieResponse>>
+    fun getNowPlayingMovies(): Flow<PagingData<Movie>>
+    fun getPopularMovies(): Flow<PagingData<Movie>>
+    fun getUpcomingMovies(): Flow<PagingData<Movie>>
     suspend fun getMovieDetails(movieId: Int): Flow<ResponseResult<MovieDetailsResponse>>
 }

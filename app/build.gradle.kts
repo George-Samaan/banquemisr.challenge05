@@ -81,13 +81,18 @@ dependencies {
     //jetpack navigation
     implementation(libs.androidx.navigation.compose)
 
-    //swipe refresh
-    implementation(libs.accompanist.swiperefresh)
-
     //Rating bar
-    implementation("com.github.SmartToolFactory:Compose-RatingBar:1.1.1")
+    implementation(libs.compose.ratingbar)
 
     //Google icons
-    implementation("androidx.compose.material:material-icons-extended-android:1.7.2")
+    implementation(libs.androidx.material.icons.extended.android)
+
+    //Pagination
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.paging.compose)
+
+    //Pager
+    implementation("com.google.accompanist:accompanist-pager:0.32.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
 
 }
