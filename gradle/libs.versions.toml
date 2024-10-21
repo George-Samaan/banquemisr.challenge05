@@ -1,5 +1,4 @@
 [versions]
-accompanistSwiperefresh = "0.36.0"
 agp = "8.6.1"
 coilCompose = "2.0.0"
 composeRatingbar = "1.1.1"
@@ -21,7 +20,6 @@ pagingRuntime = "3.3.2"
 retrofit = "2.11.0"
 
 [libraries]
-accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanistSwiperefresh" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-material-icons-extended-android = { module = "androidx.compose.material:material-icons-extended-android", version.ref = "materialIconsExtendedAndroid" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
