@@ -81,9 +81,6 @@ dependencies {
     //jetpack navigation
     implementation(libs.androidx.navigation.compose)
 
-    //swipe refresh
-    implementation(libs.accompanist.swiperefresh)
-
     //Rating bar
     implementation(libs.compose.ratingbar)
 
@@ -96,5 +93,6 @@ dependencies {
 
     //Pager
     implementation("com.google.accompanist:accompanist-pager:0.32.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
 
 }

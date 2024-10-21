@@ -23,6 +23,5 @@ class RemoteDataSourceImpl(private val apiService: TMDBApiServices) : RemoteData
 
     override suspend fun getMovieDetails(movieId: Int): Flow<ResponseResult<MovieDetailsResponse>> {
         return handleApiCall { apiService.getMovieDetails(movieId) }
-
     }
 }

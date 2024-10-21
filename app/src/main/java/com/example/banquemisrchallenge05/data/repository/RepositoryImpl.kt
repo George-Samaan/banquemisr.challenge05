@@ -17,19 +17,19 @@ class RepositoryImpl(
 ) : Repository {
     override fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
         return Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
             pagingSourceFactory = { NowPlayingMoviesPagingSource(remoteDataSource) }).flow
     }
 
     override fun getPopularMovies(): Flow<PagingData<Movie>> {
         return Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
             pagingSourceFactory = { PopularMoviesPagingSource(remoteDataSource) }).flow
     }
 
     override fun getUpcomingMovies(): Flow<PagingData<Movie>> {
         return Pager(
-            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
             pagingSourceFactory = { UpcomingMoviesPagingSource(remoteDataSource) }).flow
     }
 
