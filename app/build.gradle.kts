@@ -66,4 +66,43 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+
+    //coil for images
+    implementation(libs.coil.compose)
+
+    //Animation
+    implementation(libs.lottie.compose)
+
+    //jetpack navigation
+    implementation(libs.androidx.navigation.compose)
+
+    //Rating bar
+    implementation(libs.compose.ratingbar)
+
+    //Google icons
+    implementation(libs.androidx.material.icons.extended.android)
+
+    //Pagination
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.paging.compose)
+
+    //Pager
+    implementation(libs.accompanist.pager)
+    implementation(libs.google.accompanist.pager.indicators)
+
+    //Unit Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.junit.v113)
+    testImplementation(libs.robolectric.v49)
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockk.android)
 }
