@@ -6,10 +6,10 @@ import androidx.paging.PagingData
 import com.example.banquemisrchallenge05.data.model.Movie
 import com.example.banquemisrchallenge05.data.model.MovieDetailsResponse
 import com.example.banquemisrchallenge05.data.network.ResponseResult
-import com.example.banquemisrchallenge05.data.paging.NowPlayingMoviesPagingSource
-import com.example.banquemisrchallenge05.data.paging.PopularMoviesPagingSource
-import com.example.banquemisrchallenge05.data.paging.UpcomingMoviesPagingSource
 import com.example.banquemisrchallenge05.data.remote.RemoteDataSource
+import com.example.banquemisrchallenge05.ui.features.moviesHome.paging.NowPlayingMoviesPagingSource
+import com.example.banquemisrchallenge05.ui.features.moviesHome.paging.PopularMoviesPagingSource
+import com.example.banquemisrchallenge05.ui.features.moviesHome.paging.UpcomingMoviesPagingSource
 import kotlinx.coroutines.flow.Flow
 
 class RepositoryImpl(

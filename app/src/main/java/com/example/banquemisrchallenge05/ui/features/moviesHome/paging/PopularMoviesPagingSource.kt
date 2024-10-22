@@ -1,4 +1,4 @@
-package com.example.banquemisrchallenge05.data.paging//package com.example.banquemisrchallenge05.ui.features.moviesHome.view
+package com.example.banquemisrchallenge05.ui.features.moviesHome.paging//package com.example.banquemisrchallenge05.ui.features.moviesHome.view
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

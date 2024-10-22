@@ -1,4 +1,4 @@
-package com.example.banquemisrchallenge05.data.paging//package com.example.banquemisrchallenge05.ui.features.moviesHome.view
+package com.example.banquemisrchallenge05.ui.features.moviesHome.paging//package com.example.banquemisrchallenge05.ui.features.moviesHome.view
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -6,15 +6,16 @@ import com.example.banquemisrchallenge05.data.model.Movie
 import com.example.banquemisrchallenge05.data.network.ResponseResult
 import com.example.banquemisrchallenge05.data.remote.RemoteDataSource
 
-class UpcomingMoviesPagingSource(
+class NowPlayingMoviesPagingSource(
     private val apiService: RemoteDataSource
 ) : PagingSource<Int, Movie>() {
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         return try {
             val currentPage = params.key ?: 1
             var movies: List<Movie> = emptyList()
 
-            apiService.getUpcomingMovies(page = currentPage).collect { responseResult ->
+            apiService.getNowPlayingMovies(page = currentPage).collect { responseResult ->
                 when (responseResult) {
                     is ResponseResult.Success -> {
                         movies = responseResult.data.results

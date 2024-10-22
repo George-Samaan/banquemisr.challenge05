@@ -92,7 +92,17 @@ dependencies {
     implementation(libs.paging.compose)
 
     //Pager
-    implementation("com.google.accompanist:accompanist-pager:0.32.0")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
+    implementation(libs.accompanist.pager)
+    implementation(libs.google.accompanist.pager.indicators)
 
+    //Unit Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.junit.v113)
+    testImplementation(libs.robolectric.v49)
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockk.android)
 }

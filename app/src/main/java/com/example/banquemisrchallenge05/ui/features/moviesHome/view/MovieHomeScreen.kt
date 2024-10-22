@@ -22,7 +22,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.banquemisrchallenge05.data.model.Movie
 import com.example.banquemisrchallenge05.ui.features.moviesHome.viewModel.MoviesHomeViewModel
-import com.example.banquemisrchallenge05.ui.sharedComponents.AnimationIndicator
 import com.example.banquemisrchallenge05.ui.sharedComponents.Gap
 import com.example.banquemisrchallenge05.utils.ConnectivityReceiver
 
