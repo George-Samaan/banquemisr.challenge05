@@ -1,6 +1,5 @@
 package com.example.banquemisrchallenge05.ui.features.moviesDetailed.viewModel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.banquemisrchallenge05.data.network.ApiState
@@ -23,16 +22,10 @@ class MoviesDetailsViewModel(private val repository: Repository) : ViewModel() {
             }.collect { result ->
                 when (result) {
                     is ResponseResult.Success -> {
-                        Log.d("MovieDetailsViewModel", "Movie details fetched successfully")
                         _movieDetails.value = ApiState.Success(result.data)
-                        Log.d("MovieDetailsViewModel", "Current State: $_movieDetails")
                     }
 
                     is ResponseResult.Error -> {
-                        Log.e(
-                            "MovieDetailsViewModel",
-                            "Error fetching movie details: ${result.exception.message}"
-                        )
                         _movieDetails.value =
                             ApiState.Failure(result.exception.message ?: "Unknown error occurred")
                     }

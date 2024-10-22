@@ -1,6 +1,5 @@
 package com.example.banquemisrchallenge05.utils
 
-import android.util.Log
 import com.example.banquemisrchallenge05.data.network.ResponseResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -13,10 +12,8 @@ object ApiHelper {
         try {
             val response = call()
             if (response.isSuccessful && response.body() != null) {
-                Log.d(TAG, "API Call Success: ${response.body()}")
                 emit(ResponseResult.Success(response.body()!!))
             } else {
-                Log.e(TAG, "API Call Error: ${response.code()} - ${response.message()}")
                 emit(ResponseResult.Error(Exception("Failed to fetch data")))
             }
         } catch (e: UnknownHostException) {
